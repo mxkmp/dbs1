@@ -1,6 +1,6 @@
 package main;
 
-import java.io.IOException;
+import models.PatchObject;
 
 public class Main {
 
@@ -15,6 +15,9 @@ public class Main {
             TemplateConverter cnv = new TemplateConverter(content);
 
             cnv.convertTemplate();
+            for (PatchObject b : cnv.getPatchList()) {
+                System.out.println(b.toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,11 +1,13 @@
 package models;
 
+import java.util.Arrays;
+
 public class PatchObject {
     public enum statementType{
         UPDATE, DELETE, INSERT
     }
-    private final static int IDX_PRIMARY = 0;
 
+    public final static int IDX_PRIMARY = 0;
     private String tableName;
     private statementType type;
     private String[] columnNames;
@@ -16,7 +18,7 @@ public class PatchObject {
     }
 
     public PatchObject(String tableName, statementType type, String[] columnNames, String[] content) {
-        this.tableName = tableName;
+        this(tableName);
         this.type = type;
         this.columnNames = columnNames;
         this.content = content;
@@ -52,5 +54,15 @@ public class PatchObject {
 
     public void setContent(String[] content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "PatchObject{" +
+                "tableName='" + tableName + '\'' +
+                ", type=" + type +
+                ", columnNames=" + Arrays.toString(columnNames) +
+                ", content=" + Arrays.toString(content) +
+                '}';
     }
 }
