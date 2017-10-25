@@ -2,13 +2,18 @@ package models;
 
 public class Column {
     private String name;
+    private String value;
     private int sqlType;
-    private int value;
 
-    //TODO: value anpassen
     public Column(String name, int type) {
         this.name = name;
         this.sqlType = type;
+    }
+
+    public Column(String name, String value, int sqlType) {
+        this.name = name;
+        this.value = value;
+        this.sqlType = sqlType;
     }
 
     public String getName() {
@@ -27,4 +32,20 @@ public class Column {
         this.sqlType = sqlType;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Column{" +
+                "name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                ", sqlType=" + sqlType +
+                '}';
+    }
 }
