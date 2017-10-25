@@ -5,6 +5,7 @@ public class Column {
     private int sqlType;
     private int value;
 
+    //TODO: value anpassen
     public Column(String name, int type) {
         this.name = name;
         this.sqlType = type;

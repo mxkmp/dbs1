@@ -1,5 +1,6 @@
 package models;
 
+import java.sql.PreparedStatement;
 import java.util.Arrays;
 
 public class PatchObject {
@@ -7,10 +8,13 @@ public class PatchObject {
         UPDATE, DELETE, INSERT
     }
 
+    private static final int IDX_PRIMARY = 0;
+
     private String tableName;
     private statementType type;
     private Column[] column;
     private String[] values;
+    private PreparedStatement stmnt;
 
     public PatchObject(String tableName) {
         this.tableName = tableName;
@@ -23,36 +27,36 @@ public class PatchObject {
         this.values = values;
     }
 
-    public String getTableName() {
-        return tableName;
+    public Column getPrimaryKeyColumn() {
+        return this.column[IDX_PRIMARY];
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public String getPrimaryKeyValue() {
+        return this.values[IDX_PRIMARY];
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     public statementType getType() {
         return type;
     }
 
-    public void setType(statementType type) {
-        this.type = type;
-    }
-
     public Column[] getColumn() {
         return column;
-    }
-
-    public void setColumn(Column[] column) {
-        this.column = column;
     }
 
     public String[] getValues() {
         return values;
     }
 
-    public void setValues(String[] values) {
-        this.values = values;
+    public PreparedStatement getStmnt() {
+        return stmnt;
+    }
+
+    public void setStmnt(PreparedStatement stmnt) {
+        this.stmnt = stmnt;
     }
 
     @Override
@@ -62,6 +66,7 @@ public class PatchObject {
                 ", type=" + type +
                 ", column=" + Arrays.toString(column) +
                 ", values=" + Arrays.toString(values) +
+                ", stmnt=" + stmnt +
                 '}';
     }
 }

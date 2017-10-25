@@ -23,6 +23,8 @@ public class TemplateConverter {
     }
 
     /**
+     * converts Templatefile into a List of Patchobjects
+     * @Pre fileContent !empty
      * @throws IllegalArgumentException
      */
     public List<PatchObject> convertTemplate() throws IllegalArgumentException{
@@ -84,11 +86,15 @@ public class TemplateConverter {
             }
         }
 
+
+        //TODO: Fehlerabfangen und weitere Verarbeitung abbrechen
+
         for(PatchObject patch : this.patchList){
+            String stmnt = "";
+            PreparedStatement pstmn = null;
             switch(patch.getType()){
                 case INSERT:
-                    System.out.println(Arrays.toString(patch.getColumn()));
-
+                    //Format columns and values to a String
                     String columns = "";
                     String values = "";
                     for(int i = 0; i < patch.getColumn().length; i++){
@@ -100,26 +106,57 @@ public class TemplateConverter {
                         values += "?";
                     }
 
-                    String stmnt = String.format("INSERT INTO %s (%s)values(%s)", patch.getTableName(), columns, values);
-                    System.out.println(stmnt);
+                    stmnt = String.format("INSERT INTO %s (%s)values(%s);", patch.getTableName(), columns, values);
+
                     try {
-                        PreparedStatement pstmn = con.prepareStatement(stmnt);
+                        pstmn = con.prepareStatement(stmnt);
                         for(int i = 0; i < patch.getColumn().length; i++){
                             pstmn.setObject(i+1, patch.getValues()[i], patch.getColumn()[i].getSqlType());
                         }
-
-                        pstmn.executeQuery();
+                        patch.setStmnt(pstmn);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
 
-
                     break;
                 case UPDATE:
+                    String updateValues = "";
+                    String primaryKey = String.format("%s = ?", patch.getPrimaryKeyColumn().getName());
+                    for (int i = 1; i < patch.getColumn().length; i++) {
+                        if (i != 1) {
+                            updateValues += ",";
+                        }
+                        updateValues += String.format("%s = ?", patch.getColumn()[i].getName());
+                    }
+
+                    stmnt = String.format("UPDATE %s SET %s WHERE %s;", patch.getTableName(), updateValues, primaryKey);
+
+                    try {
+                        pstmn = con.prepareStatement(stmnt);
+                        for (int i = 1; i < patch.getColumn().length; i++) {
+                            pstmn.setObject(i, patch.getValues()[i], patch.getColumn()[i].getSqlType());
+                        }
+                        pstmn.setObject(patch.getColumn().length, patch.getPrimaryKeyValue(), patch.getPrimaryKeyColumn().getSqlType());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    patch.setStmnt(pstmn);
                     break;
                 case DELETE:
+                    String deleteValue = String.format("%s = ?", patch.getPrimaryKeyColumn().getName());
+                    stmnt = String.format("DELETE FROM %s WHERE %s", patch.getTableName(), deleteValue);
+
+                    try {
+                        pstmn = con.prepareStatement(stmnt);
+                        pstmn.setObject(1, patch.getPrimaryKeyValue(), patch.getPrimaryKeyColumn().getSqlType());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    patch.setStmnt(pstmn);
                     break;
                 default:
+                    System.err.println("Error");
                     break;
             }
         }
