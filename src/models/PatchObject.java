@@ -7,21 +7,20 @@ public class PatchObject {
         UPDATE, DELETE, INSERT
     }
 
-    public final static int IDX_PRIMARY = 0;
     private String tableName;
     private statementType type;
-    private String[] columnNames;
-    private String[] content;
+    private Column[] column;
+    private String[] values;
 
     public PatchObject(String tableName) {
         this.tableName = tableName;
     }
 
-    public PatchObject(String tableName, statementType type, String[] columnNames, String[] content) {
+    public PatchObject(String tableName, statementType type, Column[] column, String[] values) {
         this(tableName);
         this.type = type;
-        this.columnNames = columnNames;
-        this.content = content;
+        this.column = column;
+        this.values = values;
     }
 
     public String getTableName() {
@@ -40,20 +39,20 @@ public class PatchObject {
         this.type = type;
     }
 
-    public String[] getColumnNames() {
-        return columnNames;
+    public Column[] getColumn() {
+        return column;
     }
 
-    public void setColumnNames(String[] columnNames) {
-        this.columnNames = columnNames;
+    public void setColumn(Column[] column) {
+        this.column = column;
     }
 
-    public String[] getContent() {
-        return content;
+    public String[] getValues() {
+        return values;
     }
 
-    public void setContent(String[] content) {
-        this.content = content;
+    public void setValues(String[] values) {
+        this.values = values;
     }
 
     @Override
@@ -61,8 +60,8 @@ public class PatchObject {
         return "PatchObject{" +
                 "tableName='" + tableName + '\'' +
                 ", type=" + type +
-                ", columnNames=" + Arrays.toString(columnNames) +
-                ", content=" + Arrays.toString(content) +
+                ", column=" + Arrays.toString(column) +
+                ", values=" + Arrays.toString(values) +
                 '}';
     }
 }
