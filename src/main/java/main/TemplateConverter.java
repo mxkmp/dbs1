@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -20,9 +19,15 @@ public class TemplateConverter {
         this.fileContent = fileContent;
     }
 
+    public TemplateConverter(String fileContent, Connection con) {
+        this.fileContent = fileContent;
+        this.con = con;
+    }
 
-    public void start() {
-        this.con = new DBConnection().getConnection();
+    public void writeToDatabase() {
+        if (this.con == null) {
+            this.con = new DBConnection().getConnection();
+        }
 
         try {
             con.setAutoCommit(false);

@@ -1,12 +1,11 @@
-import main.DBConnection;
-import main.TemplateConverter;
-import models.PatchObject;
+package main;
 
+import models.PatchObject;
 import org.junit.Test;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
 
 public class TemplateConverterTest {
 
@@ -26,13 +25,13 @@ public class TemplateConverterTest {
         statements = new String[4];
         statements[0] = String.format("INSERT INTO %s (%s)values(%s)", table,
                 "isbn,title,fname,author,price,year_published",
-                "'3-238-21751-0','Test1','Brian','Moore','7.90',1987");
+                "'3-238-21751-0','Test1','Brian','Moore','7.90','1987'");
         statements[1] = String.format("INSERT INTO %s (%s)values(%s)", table,
                 "isbn,title,fname,author,price,year_published",
-                "'3-238-21752-0','Test Titel','Vorname','Nachname','1.11',2000");
+                "'3-238-21752-0','Test Titel','Vorname','Nachname','1.11','2000'");
         statements[2] = String.format("DELETE FROM %s WHERE %s", table, "isbn='3-240-21755-2'");
         statements[3] = String.format("UPDATE %s SET %s WHERE %s", table,
-                "title='Test100',fname='Brian',author='Moore',price='12.90',year_published=1987",
+                "title='Test100',fname='Brian',author='Moore',price='12.90',year_published='1987'",
                 "isbn='3-239-21755-2'");
 
         //act
@@ -60,12 +59,12 @@ public class TemplateConverterTest {
         statements = new String[3];
         statements[0] = String.format("INSERT INTO %s (%s)values(%s)", table,
                 "id,description,amount,date",
-                "12345,'Neuer Zinssatz','0.75','2014-02-01 00:00:00+01'");
+                "'12345','Neuer Zinssatz','0.75','2014-02-01 00:00:00.000000 +01:00:00'");
         statements[1] = String.format("UPDATE %s SET %s WHERE %s", table,
-                "description='Zins Extra-Konto',amount='0.5',date='2014-02-01 00:00:00+01'",
-                "id=12231");
+                "description='Zins Extra-Konto',amount='0.5',date='2014-02-01 00:00:00.000000 +01:00:00'",
+                "id='12231'");
         statements[2] = String.format("DELETE FROM %s WHERE %s", table,
-                "id=11111");
+                "id='11111'");
 
         TemplateConverter converter = new TemplateConverter(fileContent);
         converter.setCon(new DBConnection().getConnection());

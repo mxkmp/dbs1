@@ -1,6 +1,5 @@
 package main;
 
-import models.PatchObject;
 
 public class Main {
 
@@ -13,7 +12,7 @@ public class Main {
         try {
             String content = templateReader.readTemplate();
             TemplateConverter cnv = new TemplateConverter(content);
-            cnv.start();
+            cnv.writeToDatabase();
 
         } catch (Exception e) {
             e.printStackTrace();
