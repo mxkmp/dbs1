@@ -2,6 +2,7 @@ package main;
 
 import models.Column;
 import models.PatchObject;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,13 +36,14 @@ public class TemplateConverter {
             this.patchList = convertTemplate();
             generateStatements(this.patchList);
 
-            for (PatchObject b : this.patchList) {
-                b.getStmnt().execute();
+            if (this.patchList != null) {
+                for (PatchObject b : this.patchList) {
+                    b.getStmnt().execute();
+                }
+                con.commit();
             }
-
-            con.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             try {
                 con.rollback();
             } catch (SQLException e1) {
