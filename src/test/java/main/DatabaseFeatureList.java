@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class DatabaseFeatureList {
     private static boolean setupFlag = false;
@@ -22,6 +23,8 @@ public class DatabaseFeatureList {
         con = new DBConnection().getConnection();
 
         if (setupFlag) return;
+
+        //initial purge of the database
         Statement stm = con.createStatement();
         stm.executeUpdate("DELETE FROM test_zinsen;");
         setupFlag = true;
@@ -76,11 +79,31 @@ public class DatabaseFeatureList {
 
     @Then("^Amount from Entry id = (\\d+) is now (\\d+)$")
     public void amountFromEntryIdIsNow(int arg0, int arg1) throws Throwable {
-        PreparedStatement preparedStatement = con.prepareStatement(String.format("SELECT amount FROM test_zinsen WHERE id = %d", arg0));
+        PreparedStatement preparedStatement = con.prepareStatement("SELECT amount FROM test_zinsen WHERE id = ?");
+        preparedStatement.setInt(1, arg0);
         ResultSet rs = preparedStatement.executeQuery();
 
         while (rs.next()) {
             assertEquals(rs.getInt(1), arg1);
         }
+    }
+
+    @Then("^the database still contains (\\d+) entry and no entry with id: (\\d+)$")
+    public void theDatabaseStillContainsEntryAndNoEntryWithId(int arg0, int arg1) throws Throwable {
+        PreparedStatement preparedStatement = con.prepareStatement("SELECT count(*) from test_zinsen");
+        ResultSet rs = preparedStatement.executeQuery();
+
+        while (rs.next()) {
+            assertEquals(rs.getInt(1), arg0);
+        }
+
+        preparedStatement.close();
+        rs.close();
+
+        preparedStatement = con.prepareStatement("SELECT * from test_zinsen WHERE id = ?");
+        preparedStatement.setInt(1, arg1);
+        rs = preparedStatement.executeQuery();
+
+        assertFalse(rs.next());
     }
 }
