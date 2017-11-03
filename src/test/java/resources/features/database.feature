@@ -48,8 +48,8 @@ Feature: Database Import
       i:200|Zins Minus-Konto|-0.01|2017-01-01
       """
     When Template is executed
-    Then the database still contains 1 entry and no entry with id: 200
-    #TODO: Nachfragen ob das in Ordnung ist, dass es klappt
+    Then the database still contains 2 entry and one entry with id: 200 and amount "-0.01"
+    #TODO: Anpasssen es ist in Ordnung, dass es nicht abgebrochen wird
     #Update wird nicht ausgeführt, gibt aber keinen Fehler aus, Insert wird ausgeführt
 
 

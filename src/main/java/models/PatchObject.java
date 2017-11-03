@@ -13,6 +13,7 @@ public class PatchObject {
     private String tableName;
     private statementType type;
     private Column[] column;
+    //TODO: 3 statements global definieren
     private PreparedStatement stmnt;
 
     public PatchObject(String tableName) {

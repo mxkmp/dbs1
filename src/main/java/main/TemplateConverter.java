@@ -72,6 +72,7 @@ public class TemplateConverter {
             switch (singleLine[0]){
                 case "t":
                     tableName = singleLine[1];
+                    //TODO: Database metadata getColumns - mit tabelle
                     PreparedStatement stmt = con.prepareStatement(String.format("SELECT * FROM %s LIMIT 1", tableName));
                     ResultSet rs = stmt.executeQuery();
 
@@ -92,7 +93,7 @@ public class TemplateConverter {
                     patchList.add(new PatchObject(tableName, PatchObject.statementType.DELETE, storeValues(columns, values)));
                     break;
                 default:
-                    throw new IllegalArgumentException("Unkown option: '" + singleLine[0] + "'");
+                    throw new IllegalArgumentException("Unknown option: '" + singleLine[0] + "'");
             }
         }
         return this.patchList;

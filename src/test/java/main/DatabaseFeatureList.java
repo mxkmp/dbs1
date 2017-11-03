@@ -5,13 +5,13 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class DatabaseFeatureList {
     private static boolean setupFlag = false;
@@ -88,8 +88,8 @@ public class DatabaseFeatureList {
         }
     }
 
-    @Then("^the database still contains (\\d+) entry and no entry with id: (\\d+)$")
-    public void theDatabaseStillContainsEntryAndNoEntryWithId(int arg0, int arg1) throws Throwable {
+    @Then("^the database still contains (\\d+) entry and one entry with id: (\\d+) and amount \"([^\"]*)\"$")
+    public void theDatabaseStillContainsEntryAndOneEntryWithIdAndAmount(int arg0, int arg1, String arg2) throws Throwable {
         PreparedStatement preparedStatement = con.prepareStatement("SELECT count(*) from test_zinsen");
         ResultSet rs = preparedStatement.executeQuery();
 
@@ -104,6 +104,11 @@ public class DatabaseFeatureList {
         preparedStatement.setInt(1, arg1);
         rs = preparedStatement.executeQuery();
 
-        assertFalse(rs.next());
+        BigDecimal bgAmount = new BigDecimal(arg2);
+        while (rs.next()) {
+
+            BigDecimal amount = rs.getBigDecimal("amount");
+            assertEquals(amount, bgAmount);
+        }
     }
 }
