@@ -32,7 +32,6 @@ public class TemplateConverter {
 
         try {
             con.setAutoCommit(false);
-
             this.patchList = convertTemplate();
             generateStatements(this.patchList);
 
